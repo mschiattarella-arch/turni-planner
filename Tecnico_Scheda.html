@@ -18,17 +18,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .row{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
 .label{font-size:13px;color:#555;min-width:90px}
 input[type=text],select{height:36px;padding:0 12px;font-size:13px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a}
-.btn{padding:9px 20px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;border:none;transition:opacity .15s}
+.btn{padding:9px 20px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;border:none}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .btn-primary{background:#1a1a1a;color:#fff}
 .btn-green{background:#16a34a;color:#fff}
-.btn-green:hover:not(:disabled){background:#15803d}
 .grid-wrap{overflow-x:auto;margin-top:4px}
 table.grid{border-collapse:collapse;min-width:100%}
 table.grid th{padding:5px 3px;text-align:center;font-weight:600;color:#555;border:1px solid #e5e5e5;background:#f9f9f9;white-space:nowrap;font-size:11px;min-width:32px}
 table.grid th.wk{color:#c0392b;background:#fff5f5}
 table.grid td{padding:3px;text-align:center;border:1px solid #e5e5e5;font-size:11px;font-weight:700;min-width:32px;height:28px;cursor:pointer;user-select:none}
-table.grid td.name-cell{text-align:left;padding:3px 10px;min-width:100px;font-size:12px;font-weight:500;color:#444;cursor:default;background:#f9f9f9;white-space:nowrap}
+table.grid td.name-cell{text-align:left;padding:3px 10px;min-width:100px;font-size:12px;cursor:default;background:#f9f9f9;white-space:nowrap}
 table.grid td.disabled{background:#f5f5f5;color:#ccc;cursor:default}
 .v-T{background:#dbeafe;color:#1e40af}.v-PE{background:#fee2e2;color:#b91c1c}
 .v-F{background:#fef9c3;color:#854d0e}.v-C{background:#dcfce7;color:#15803d}
@@ -47,19 +46,17 @@ table.grid td.disabled{background:#f5f5f5;color:#ccc;cursor:default}
 .sum-C{background:#dcfce7}.sum-C .sum-value{color:#15803d}
 .month-nav{display:flex;align-items:center;gap:8px;margin-left:auto}
 .month-nav button{background:none;border:1px solid #ddd;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:15px}
-.month-nav button:hover{background:#f0f0f0}
 .month-label{font-size:13px;font-weight:600;min-width:130px;text-align:center}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .toast{position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);display:none;z-index:999;color:#fff}
-.toast.ok{background:#16a34a}.toast.err{background:#dc2626}.toast.info{background:#1e40af}
+.toast.ok{background:#16a34a}.toast.err{background:#dc2626}
 .setup-box{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:16px 18px;margin-bottom:16px}
 .setup-box h3{font-size:14px;font-weight:600;color:#92400e;margin-bottom:8px}
-.setup-box p{font-size:13px;color:#78350f;line-height:1.6}
-.setup-box input{width:100%;margin-top:8px;height:36px;padding:0 12px;font-size:13px;border:1px solid #fcd34d;border-radius:8px;background:#fff}
+.setup-box input{width:100%;margin-top:8px;height:36px;padding:0 12px;font-size:13px;border:1px solid #fcd34d;border-radius:8px}
 .saved-badge{font-size:11px;background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:20px;font-weight:600;margin-left:8px}
 .progress-bar{height:4px;background:#e0e0e0;border-radius:2px;margin-top:8px;overflow:hidden;display:none}
-.progress-fill{height:100%;background:#16a34a;border-radius:2px;transition:width .2s}
+.progress-fill{height:100%;background:#16a34a;border-radius:2px;transition:width .3s}
 </style>
 </head>
 <body>
@@ -72,7 +69,7 @@ table.grid td.disabled{background:#f5f5f5;color:#ccc;cursor:default}
 
   <div class="setup-box" id="setup-box">
     <h3>⚙️ Prima configurazione</h3>
-    <p>Incolla qui l'URL della Web App Google Apps Script fornito dal tuo PM:</p>
+    <p style="font-size:13px;color:#78350f">Incolla qui l'URL della Web App Google Apps Script fornito dal tuo PM:</p>
     <input type="text" id="api-url-input" placeholder="https://script.google.com/macros/s/.../exec"/>
     <div style="display:flex;gap:8px;margin-top:8px">
       <button class="btn btn-primary" onclick="saveApiUrl()">Salva e connetti</button>
@@ -144,7 +141,6 @@ table.grid td.disabled{background:#f5f5f5;color:#ccc;cursor:default}
     <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
     <p style="font-size:12px;color:#999;margin-top:8px;text-align:center">I dati verranno salvati sul server. Il PM li vedrà subito.</p>
   </div>
-
 </div>
 <div class="toast" id="toast"></div>
 
@@ -168,12 +164,37 @@ function dayKey(d){return d.toISOString().slice(0,10);}
 function isWe(d){return d.getDay()===0||d.getDay()===6;}
 function ensureMonth(mi){if(!data[mi])data[mi]={M:{},S:{}};}
 
-// Ogni chiamata è una GET semplice — niente CORS
-async function apiGet(params) {
-  const url = new URL(API_URL);
-  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
-  const res = await fetch(url.toString());
-  return res.json();
+// JSONP — unico sistema che funziona cross-origin senza server proxy
+let _cbCounter = 0;
+function jsonp(params) {
+  return new Promise((resolve, reject) => {
+    const cbName = '_cb' + (++_cbCounter) + '_' + Date.now();
+    const timeout = setTimeout(() => {
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+      reject(new Error('Timeout'));
+    }, 15000);
+
+    window[cbName] = function(data) {
+      clearTimeout(timeout);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+      resolve(data);
+    };
+
+    const url = new URL(API_URL);
+    url.searchParams.set('callback', cbName);
+    Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
+
+    const script = document.createElement('script');
+    script.src = url.toString();
+    script.onerror = () => {
+      clearTimeout(timeout);
+      delete window[cbName];
+      reject(new Error('Script load error'));
+    };
+    document.head.appendChild(script);
+  });
 }
 
 function saveApiUrl(){
@@ -184,7 +205,7 @@ function saveApiUrl(){
 
 function ping(){
   if(!API_URL)return; setStatus('connecting');
-  apiGet({action:'ping'}).then(r=>{
+  jsonp({action:'ping'}).then(r=>{
     if(r.ok){setStatus('ok');document.getElementById('setup-box').style.display='none';}
     else setStatus('err');
   }).catch(()=>setStatus('err'));
@@ -218,7 +239,7 @@ function renderGrid(){
   const shifts=[];
   if(document.getElementById('chk-M').checked) shifts.push('M');
   if(document.getElementById('chk-S').checked) shifts.push('S');
-  if(!shifts.length){document.getElementById('cal-grid').innerHTML='<p style="font-size:13px;color:#999;padding:10px">Seleziona almeno un turno.</p>';return;}
+  if(!shifts.length){document.getElementById('cal-grid').innerHTML='<p style="padding:10px;font-size:13px;color:#999">Seleziona almeno un turno.</p>';return;}
   let h='<table class="grid"><thead><tr><th style="text-align:left;min-width:100px">Turno</th>';
   days.forEach(d=>{const we=isWe(d);h+=`<th class="${we?'wk':''}">${DAY_NAMES[d.getDay()]}<br>${d.getDate()}</th>`;});
   h+='</tr></thead><tbody>';
@@ -241,9 +262,7 @@ function cycleCell(shift,k,el){
   if(!data[mi][shift]) data[mi][shift]={};
   if(next) data[mi][shift][k]=next; else delete data[mi][shift][k];
   el.className=next?'v-'+next:'v-empty'; el.textContent=next;
-  updateSummary();
-  document.getElementById('saved-badge').style.display='none';
-  saveLocal();
+  updateSummary(); document.getElementById('saved-badge').style.display='none'; saveLocal();
 }
 
 function updateSummary(){
@@ -265,14 +284,11 @@ async function loadFromServer(){
   if(!connected||!userName)return;
   const mi=currentMonthIdx;
   try{
-    const r=await apiGet({action:'getPrefs',userName,mese:MONTHS[mi].key});
-    if(r.ok&&r.data){
-      ensureMonth(mi); data[mi]=r.data; saveLocal(); renderGrid(); updateSummary();
-    }
-  }catch(e){console.error('loadFromServer',e);}
+    const r=await jsonp({action:'getPrefs',userName,mese:MONTHS[mi].key});
+    if(r.ok&&r.data){ ensureMonth(mi); data[mi]=r.data; saveLocal(); renderGrid(); updateSummary(); }
+  }catch(e){ console.error('loadFromServer',e); }
 }
 
-// Invio riga per riga — niente URL lunghe
 async function sendData(){
   if(!connected){showToast('Non connesso','err');return;}
   if(!userName){showToast('Seleziona il tuo nome','err');return;}
@@ -281,40 +297,37 @@ async function sendData(){
   btn.disabled=true; btn.innerHTML='<span class="spinner"></span>Invio in corso...';
   const bar=document.getElementById('progress-bar');
   const fill=document.getElementById('progress-fill');
-  bar.style.display='block'; fill.style.width='0%';
+  bar.style.display='block'; fill.style.width='5%';
 
-  try {
+  try{
     const mese=MONTHS[mi].key;
+    // 1. Cancella dati precedenti
+    await jsonp({action:'clearUser', userName, mese});
+    fill.style.width='15%';
 
-    // 1. Cancella dati precedenti per questo utente/mese
-    await apiGet({action:'clearUser', userName, mese});
-    fill.style.width='10%';
-
-    // 2. Raccogli tutte le righe da inviare
+    // 2. Raccogli righe
     const rows=[];
     ['M','S'].forEach(turno=>{
-      const td=data[mi][turno]||{};
-      Object.entries(td).forEach(([giorno,valore])=>{
+      Object.entries(data[mi][turno]||{}).forEach(([giorno,valore])=>{
         if(valore) rows.push({turno,giorno,valore});
       });
     });
 
-    // 3. Invia una riga alla volta
+    // 3. Invia una riga alla volta via JSONP
     for(let i=0;i<rows.length;i++){
       const row=rows[i];
-      await apiGet({action:'saveRow', userName, mese, turno:row.turno, giorno:row.giorno, valore:row.valore});
-      fill.style.width=Math.round(10+((i+1)/rows.length)*90)+'%';
+      await jsonp({action:'saveRow', userName, mese, turno:row.turno, giorno:row.giorno, valore:row.valore});
+      fill.style.width=Math.round(15+((i+1)/rows.length)*85)+'%';
     }
 
     fill.style.width='100%';
     showToast('Scheda inviata al PM! ✓','ok');
     document.getElementById('saved-badge').style.display='inline';
-  } catch(e){
-    console.error('sendData',e);
+  }catch(e){
+    console.error('sendData error',e);
     showToast('Errore: '+e.message,'err');
   }
-
-  setTimeout(()=>bar.style.display='none',1500);
+  setTimeout(()=>{bar.style.display='none';fill.style.width='0%';},1500);
   btn.disabled=false; btn.innerHTML='📤 Invia scheda al PM';
 }
 

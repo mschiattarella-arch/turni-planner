@@ -27,7 +27,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-green{background:#16a34a;color:#fff}
 .btn-green:hover:not(:disabled){background:#15803d}
 .btn-outline{background:#fff;color:#444;border:1px solid #ddd}
-.btn-outline:hover{background:#f5f5f5}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
 .chip{display:flex;align-items:center;gap:6px;padding:5px 10px 5px 6px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid #e0e0e0;background:#f5f5f5}
 .chip .av{width:24px;height:24px;border-radius:50%;background:#dbeafe;color:#1e40af;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
@@ -38,7 +37,7 @@ table.grid{border-collapse:collapse;min-width:100%}
 table.grid th{padding:5px 4px;text-align:center;font-weight:600;color:#555;border:1px solid #e5e5e5;background:#f9f9f9;white-space:nowrap;font-size:11px;min-width:32px}
 table.grid th.wk{color:#c0392b;background:#fff5f5}
 table.grid td{padding:3px;text-align:center;border:1px solid #e5e5e5;font-size:11px;font-weight:700;min-width:32px;height:26px;cursor:pointer;user-select:none}
-table.grid td.nc{text-align:left;padding:3px 10px;min-width:130px;font-size:12px;font-weight:500;color:#444;cursor:default;background:#f9f9f9;white-space:nowrap}
+table.grid td.nc{text-align:left;padding:3px 10px;min-width:130px;font-size:12px;cursor:default;background:#f9f9f9;white-space:nowrap}
 table.grid td.dis{background:#f5f5f5;color:#ccc;cursor:default}
 table.grid td.sl{background:#f0f0f0;font-weight:600;font-size:11px;text-align:left;padding:5px 10px;color:#555;cursor:default}
 .v-T{background:#dbeafe;color:#1e40af}.v-Ts{background:#bfdbfe;color:#1d4ed8}
@@ -56,7 +55,6 @@ table.grid td.sl{background:#f0f0f0;font-weight:600;font-size:11px;text-align:le
 .msg.warn{background:#fef9c3;color:#854d0e}.msg.success{background:#dcfce7;color:#15803d}.msg.info{background:#dbeafe;color:#1e40af}
 .month-nav{display:flex;align-items:center;gap:8px;margin-left:auto}
 .month-nav button{background:none;border:1px solid #ddd;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:15px}
-.month-nav button:hover{background:#f0f0f0}
 .month-label{font-size:13px;font-weight:600;min-width:130px;text-align:center}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
 .hint{font-size:12px;color:#888;background:#f9f9f9;padding:7px 12px;border-radius:8px;margin-bottom:10px}
@@ -66,10 +64,8 @@ table.grid td.sl{background:#f0f0f0;font-weight:600;font-size:11px;text-align:le
 .setup-box h3{font-size:14px;font-weight:600;color:#92400e;margin-bottom:8px}
 .setup-box input{width:100%;margin-top:8px;height:36px;padding:0 12px;font-size:13px;border:1px solid #fcd34d;border-radius:8px}
 .toast{position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);display:none;z-index:999;color:#fff}
-.toast.ok{background:#16a34a}.toast.err{background:#dc2626}.toast.info{background:#1e40af}
+.toast.ok{background:#16a34a}.toast.err{background:#dc2626}
 .last-refresh{font-size:11px;color:#999;margin-left:8px}
-.refresh-btn{font-size:12px;padding:5px 12px;border-radius:6px;cursor:pointer;border:1px solid #ddd;background:#fff;color:#555}
-.refresh-btn:hover{background:#f5f5f5}
 </style>
 </head>
 <body>
@@ -79,12 +75,11 @@ table.grid td.sl{background:#f0f0f0;font-weight:600;font-size:11px;text-align:le
   <div class="status-dot" id="status-dot"></div>
   <span class="status-txt" id="status-txt">Connessione...</span>
 </div>
-
 <div class="container">
 
 <div class="setup-box" id="setup-box">
   <h3>⚙️ Prima configurazione</h3>
-  <p>Incolla l'URL della Web App Google Apps Script:</p>
+  <p style="font-size:13px;color:#78350f">Incolla l'URL della Web App Google Apps Script:</p>
   <input type="text" id="api-url-input" placeholder="https://script.google.com/macros/s/.../exec"/>
   <div style="display:flex;gap:8px;margin-top:8px">
     <button class="btn btn-primary" onclick="saveApiUrl()">Salva e connetti</button>
@@ -98,7 +93,6 @@ table.grid td.sl{background:#f0f0f0;font-weight:600;font-size:11px;text-align:le
   <button class="tab" onclick="showTab('book')">📒 Book</button>
 </div>
 
-<!-- SCHEDE -->
 <div id="tab-schede" class="section active">
   <div class="card">
     <div class="card-title">
@@ -127,7 +121,6 @@ table.grid td.sl{background:#f0f0f0;font-weight:600;font-size:11px;text-align:le
   </div>
 </div>
 
-<!-- PREVIEW -->
 <div id="tab-preview" class="section">
   <div class="card">
     <div class="card-title">
@@ -139,7 +132,7 @@ table.grid td.sl{background:#f0f0f0;font-weight:600;font-size:11px;text-align:le
       </div>
     </div>
     <div class="legend">
-      <span class="leg"><span class="leg-box v-T">T</span> Turno richiesto</span>
+      <span class="leg"><span class="leg-box v-T">T</span> Turno</span>
       <span class="leg"><span class="leg-box v-PE">PE</span> Permesso</span>
       <span class="leg"><span class="leg-box v-F">F</span> Ferie</span>
       <span class="leg"><span class="leg-box v-C">C</span> Cliente</span>
@@ -148,7 +141,6 @@ table.grid td.sl{background:#f0f0f0;font-weight:600;font-size:11px;text-align:le
   </div>
 </div>
 
-<!-- PLANNING -->
 <div id="tab-planning" class="section">
   <div class="card">
     <div class="card-title">
@@ -179,7 +171,6 @@ table.grid td.sl{background:#f0f0f0;font-weight:600;font-size:11px;text-align:le
   </div>
 </div>
 
-<!-- BOOK -->
 <div id="tab-book" class="section">
   <div class="card">
     <div class="card-title">
@@ -217,15 +208,8 @@ const ALL_PEOPLE=['Brazzo Giulio','Cantoro Federico','Cornacchia Biagio','Fortug
 const SHIFTS_CONFIG={'Negri Pietro':{M:true,S:false}};
 const DAY_NAMES=['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
 const BOOK_CYCLE=['','T','PE','F','C','R'];
-
-let currentMonthIdx=1;
-let API_URL='';
-let connected=false;
-let allPrefs={};
-let whoSent=[];
-let planning={};
-let book={};
-let repData={};
+let currentMonthIdx=1, API_URL='', connected=false;
+let allPrefs={}, whoSent=[], planning={}, book={}, repData={};
 
 function getDays(mi){const m=MONTHS[mi],days=[],d=new Date(m.year,m.month,1);while(d.getMonth()===m.month){days.push(new Date(d));d.setDate(d.getDate()+1);}return days;}
 function dk(d){return d.toISOString().slice(0,10);}
@@ -233,12 +217,29 @@ function isWe(d){return d.getDay()===0||d.getDay()===6;}
 function getShifts(name){return SHIFTS_CONFIG[name]||{M:true,S:true};}
 function getPref(name,shift,day){return(allPrefs[name]&&allPrefs[name][shift]&&allPrefs[name][shift][day])||'';}
 
-// ---- API via GET ----
-async function apiCall(params){
-  const url=new URL(API_URL);
-  Object.entries(params).forEach(([k,v])=>url.searchParams.append(k,v));
-  const res=await fetch(url.toString(),{method:'GET'});
-  return res.json();
+// JSONP
+let _cbCounter=0;
+function jsonp(params){
+  return new Promise((resolve,reject)=>{
+    const cbName='_cb'+(++_cbCounter)+'_'+Date.now();
+    const timeout=setTimeout(()=>{
+      delete window[cbName];
+      if(script.parentNode)script.parentNode.removeChild(script);
+      reject(new Error('Timeout'));
+    },15000);
+    window[cbName]=function(data){
+      clearTimeout(timeout);delete window[cbName];
+      if(script.parentNode)script.parentNode.removeChild(script);
+      resolve(data);
+    };
+    const url=new URL(API_URL);
+    url.searchParams.set('callback',cbName);
+    Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
+    const script=document.createElement('script');
+    script.src=url.toString();
+    script.onerror=()=>{clearTimeout(timeout);delete window[cbName];reject(new Error('Script error'));};
+    document.head.appendChild(script);
+  });
 }
 
 function saveApiUrl(){
@@ -249,7 +250,7 @@ function saveApiUrl(){
 
 function ping(){
   if(!API_URL)return;setStatus('connecting');
-  apiCall({action:'ping'}).then(r=>{
+  jsonp({action:'ping'}).then(r=>{
     if(r.ok){setStatus('ok');document.getElementById('setup-box').style.display='none';loadAllPrefs();}
     else setStatus('err');
   }).catch(()=>setStatus('err'));
@@ -283,21 +284,21 @@ async function loadAllPrefs(){
   const btn=document.getElementById('refresh-btn');
   btn.textContent='⏳ Caricamento...';btn.disabled=true;
   try{
-    const r=await apiCall({action:'getAllPrefs',mese:MONTHS[currentMonthIdx].key});
+    const r=await jsonp({action:'getAllPrefs',mese:MONTHS[currentMonthIdx].key});
     if(r.ok){
       allPrefs=r.data||{};whoSent=r.whoSent||[];
       renderSchede();renderPreview();
       document.getElementById('last-refresh').textContent='Agg. '+new Date().toLocaleTimeString('it-IT');
       showToast('Schede caricate ✓','ok');
-    } else showToast('Errore: '+r.msg,'err');
-  }catch(e){showToast('Errore connessione','err');console.error(e);}
+    }else showToast('Errore: '+r.msg,'err');
+  }catch(e){showToast('Errore connessione: '+e.message,'err');console.error(e);}
   btn.textContent='📥 Carica schede';btn.disabled=false;
 }
 
 async function loadPlanningFromServer(){
   if(!connected)return;
   try{
-    const r=await apiCall({action:'getPlanning',mese:MONTHS[currentMonthIdx].key});
+    const r=await jsonp({action:'getPlanning',mese:MONTHS[currentMonthIdx].key});
     if(r.ok){planning=r.planning||{};book=r.book||{};repData=r.repData||{};}
   }catch(e){console.error(e);}
 }
@@ -305,8 +306,8 @@ async function loadPlanningFromServer(){
 async function savePlanningToServer(){
   if(!connected){showToast('Non connesso','err');return;}
   try{
-    const payload=encodeURIComponent(JSON.stringify({planning,book,repData}));
-    const r=await apiCall({action:'savePlanning',mese:MONTHS[currentMonthIdx].key,payload});
+    const payload=JSON.stringify({planning,book,repData});
+    const r=await jsonp({action:'savePlanning',mese:MONTHS[currentMonthIdx].key,payload});
     if(r.ok)showToast('Planning salvato ✓','ok');
     else showToast('Errore: '+r.msg,'err');
   }catch(e){showToast('Errore','err');console.error(e);}
@@ -317,7 +318,7 @@ function renderSchede(){
   const loaded=document.getElementById('chips-loaded');
   loaded.innerHTML=whoSent.length
     ?whoSent.map(n=>{const ini=n.split(' ').map(x=>x[0]).slice(0,2).join('');return`<div class="chip loaded"><div class="av">${ini}</div>${n}</div>`;}).join('')
-    :'<span style="font-size:13px;color:#999">Nessuna scheda ricevuta per questo mese.</span>';
+    :'<span style="font-size:13px;color:#999">Nessuna scheda ricevuta.</span>';
   const miss=ALL_PEOPLE.filter(n=>!whoSent.includes(n));
   document.getElementById('chips-missing').innerHTML=miss.length
     ?miss.map(n=>`<span style="display:inline-block;margin:3px 4px;padding:3px 10px;background:#fff3cd;border:1px solid #fde68a;border-radius:20px;font-size:12px;color:#854d0e">${n}</span>`).join('')
@@ -326,7 +327,7 @@ function renderSchede(){
 
 function renderPreview(){
   const mi=currentMonthIdx;const days=getDays(mi);const wrap=document.getElementById('preview-grid');
-  if(!whoSent.length){wrap.innerHTML='<p style="font-size:13px;color:#666;padding:10px">Nessuna scheda caricata per questo mese.</p>';return;}
+  if(!whoSent.length){wrap.innerHTML='<p style="font-size:13px;color:#666;padding:10px">Nessuna scheda caricata.</p>';return;}
   let h=buildHeader(days);
   ['M','S'].forEach(shift=>{
     h+=`<tr><td colspan="${days.length+1}" class="sl">${shift==='M'?'Turno Mattina 7-16':'Turno Sera 11-20'}</td></tr>`;
@@ -393,7 +394,7 @@ function renderPlanningGrid(){
     <div class="stat"><div class="stat-label">Turni mattina</div><div class="stat-value">${Object.values(counts.M).reduce((a,b)=>a+b,0)}</div></div>
     <div class="stat"><div class="stat-label">Turni sera</div><div class="stat-value">${Object.values(counts.S).reduce((a,b)=>a+b,0)}</div></div>`;
   const msgs=[];
-  if(!Object.keys(planning).length)msgs.push({t:'info',m:'Premi "Genera automaticamente" per creare il planning.'});
+  if(!Object.keys(planning).length)msgs.push({t:'info',m:'Premi "Genera automaticamente".'});
   else{
     ['M','S'].forEach(sh=>{
       const vals=ALL_PEOPLE.filter(n=>getShifts(n)[sh]).map(n=>counts[sh][n]);
@@ -463,8 +464,8 @@ function cycleBook(name,shift,day,el){
     if(v===null)return;const n=parseInt(v);
     if(!v||n===0){delete repData[`rep_${name}_${day}`];delete book[bk];el.className='v-empty';el.textContent='';}
     else{repData[`rep_${name}_${day}`]=n;book[bk]='R';el.className='v-R';el.textContent='+'+n+'h';}
-  } else {
-    if(next)book[bk]=next; else{delete book[bk];delete repData[`rep_${name}_${day}`];}
+  }else{
+    if(next)book[bk]=next;else{delete book[bk];delete repData[`rep_${name}_${day}`];}
     let cls='v-empty',txt='';
     if(next==='T'){cls='v-T';txt='T';}else if(next==='PE'){cls='v-PE';txt='PE';}
     else if(next==='F'){cls='v-F';txt='F';}else if(next==='C'){cls='v-C';txt='C';}
