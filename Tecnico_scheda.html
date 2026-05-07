@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<!-- saved from url=(0067)file:///C:/Users/m.schiattarella/Downloads/Tecnico_Scheda_v5_1.html -->
+<html lang="it"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La mia scheda turni</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f6f9;color:#1a1a1a;min-height:100vh}
+.header{background:#1a1a1a;color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px}
+.header h1{font-size:16px;font-weight:600;flex:1}
+.status-dot{width:9px;height:9px;border-radius:50%;background:#f59e0b;flex-shrink:0}
+.status-dot.ok{background:#16a34a}.status-dot.err{background:#dc2626}
+.status-txt{font-size:12px;color:#aaa}
+.container{max-width:1100px;margin:24px auto;padding:0 20px}
+.card{background:#fff;border:1px solid #e8e8e8;border-radius:12px;padding:20px 24px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card-title{font-size:15px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.row{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.label{font-size:13px;color:#555;min-width:90px}
+input[type=text],select{height:36px;padding:0 12px;font-size:13px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a}
+.btn{padding:9px 20px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;border:none}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:#1a1a1a;color:#fff}
+.btn-green{background:#16a34a;color:#fff}
+.grid-wrap{overflow-x:auto;margin-top:4px}
+table.grid{border-collapse:collapse;min-width:100%}
+table.grid th{padding:5px 3px;text-align:center;font-weight:600;color:#555;border:1px solid #e5e5e5;background:#f9f9f9;white-space:nowrap;font-size:11px;min-width:32px}
+table.grid th.wk{color:#c0392b;background:#fff5f5}
+table.grid td{padding:3px;text-align:center;border:1px solid #e5e5e5;font-size:11px;font-weight:700;min-width:32px;height:28px;cursor:pointer;user-select:none}
+table.grid td.name-cell{text-align:left;padding:3px 10px;min-width:100px;font-size:12px;cursor:default;background:#f9f9f9;white-space:nowrap}
+table.grid td.disabled{background:#f5f5f5;color:#ccc;cursor:default}
+.v-T{background:#dbeafe;color:#1e40af}.v-PE{background:#fee2e2;color:#b91c1c}
+.v-F{background:#fef9c3;color:#854d0e}.v-C{background:#dcfce7;color:#15803d}
+.v-empty:hover{background:#f0f4ff}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.leg{display:flex;align-items:center;gap:5px;font-size:12px;color:#555}
+.leg-box{width:26px;height:18px;border-radius:3px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.hint{font-size:12px;color:#888;background:#f9f9f9;padding:8px 12px;border-radius:8px;margin-bottom:10px}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.sum-card{border-radius:8px;padding:12px 14px}
+.sum-label{font-size:11px;color:#666;margin-bottom:3px}
+.sum-value{font-size:22px;font-weight:700}
+.sum-T{background:#dbeafe}.sum-T .sum-value{color:#1e40af}
+.sum-PE{background:#fee2e2}.sum-PE .sum-value{color:#b91c1c}
+.sum-F{background:#fef9c3}.sum-F .sum-value{color:#854d0e}
+.sum-C{background:#dcfce7}.sum-C .sum-value{color:#15803d}
+.month-nav{display:flex;align-items:center;gap:8px;margin-left:auto}
+.month-nav button{background:none;border:1px solid #ddd;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:15px}
+.month-label{font-size:13px;font-weight:600;min-width:130px;text-align:center}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);display:none;z-index:999;color:#fff}
+.toast.ok{background:#16a34a}.toast.err{background:#dc2626}
+.setup-box{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.setup-box h3{font-size:14px;font-weight:600;color:#92400e;margin-bottom:8px}
+.setup-box input{width:100%;margin-top:8px;height:36px;padding:0 12px;font-size:13px;border:1px solid #fcd34d;border-radius:8px}
+.saved-badge{font-size:11px;background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:20px;font-weight:600;margin-left:8px}
+.progress-bar{height:4px;background:#e0e0e0;border-radius:2px;margin-top:8px;overflow:hidden;display:none}
+.progress-fill{height:100%;background:#16a34a;border-radius:2px;transition:width .3s}
+</style>
+<script src="./La mia scheda turni_files/exec"></script></head>
+<body>
+<div class="header">
+  <h1>📋 Scheda Turni Personale</h1>
+  <div class="status-dot err" id="status-dot"></div>
+  <span class="status-txt" id="status-txt">Errore connessione</span>
+</div>
+<div class="container">
+  <div class="setup-box" id="setup-box" style="display: none;">
+    <h3>⚙️ Prima configurazione</h3>
+    <p style="font-size:13px;color:#78350f">Incolla qui l'URL della Web App Google Apps Script:</p>
+    <input type="text" id="api-url-input" placeholder="https://script.google.com/macros/s/.../exec">
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn btn-primary" onclick="saveApiUrl()">Salva e connetti</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">👤 Chi sei?</div>
+    <div class="row">
+      <span class="label">Nome</span>
+      <select id="sel-name" style="width:230px" onchange="onNameChange()">
+        <option value="">— Seleziona —</option>
+        <option>Brazzo Giulio</option>
+        <option>Cantoro Federico</option>
+        <option>Cornacchia Biagio</option>
+        <option>Fortugno Fabio</option>
+        <option>Fumagalli Alessio</option>
+        <option>Mazzone Paolo</option>
+        <option>Negri Pietro</option>
+        <option>Giovagnoni Simone</option>
+        <option>Lorenzini Marco</option>
+        <option>Ye Daniele</option>
+      </select>
+    </div>
+    <div class="row" id="shift-row" style="display:none">
+      <span class="label">Turni abilitati</span>
+      <label style="font-size:13px;display:flex;align-items:center;gap:5px;cursor:pointer">
+        <input type="checkbox" id="chk-M" checked="" onchange="renderGrid()"> Mattina 7-16
+      </label>
+      <label style="font-size:13px;display:flex;align-items:center;gap:5px;cursor:pointer">
+        <input type="checkbox" id="chk-S" checked="" onchange="renderGrid()"> Sera 11-20
+      </label>
+    </div>
+  </div>
+  <div class="card" id="cal-card" style="display:none">
+    <div class="card-title">
+      📅 Il mio mese
+      <div class="month-nav">
+        <button onclick="changeMonth(-1)">‹</button>
+        <span class="month-label" id="month-label">Giugno 2026</span>
+        <button onclick="changeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="hint">Clicca su una cella: <strong>T</strong> = turno preferito | <strong>PE</strong> = permesso | <strong>F</strong> = ferie | <strong>C</strong> = cliente</div>
+    <div class="legend">
+      <span class="leg"><span class="leg-box v-T">T</span> Turno</span>
+      <span class="leg"><span class="leg-box v-PE">PE</span> Permesso</span>
+      <span class="leg"><span class="leg-box v-F">F</span> Ferie</span>
+      <span class="leg"><span class="leg-box v-C">C</span> Cliente</span>
+    </div>
+    <div class="grid-wrap" id="cal-grid"><table class="grid"><thead><tr><th style="text-align:left;min-width:100px">Turno</th><th class="">Lun<br>1</th><th class="">Mar<br>2</th><th class="">Mer<br>3</th><th class="">Gio<br>4</th><th class="">Ven<br>5</th><th class="wk">Sab<br>6</th><th class="wk">Dom<br>7</th><th class="">Lun<br>8</th><th class="">Mar<br>9</th><th class="">Mer<br>10</th><th class="">Gio<br>11</th><th class="">Ven<br>12</th><th class="wk">Sab<br>13</th><th class="wk">Dom<br>14</th><th class="">Lun<br>15</th><th class="">Mar<br>16</th><th class="">Mer<br>17</th><th class="">Gio<br>18</th><th class="">Ven<br>19</th><th class="wk">Sab<br>20</th><th class="wk">Dom<br>21</th><th class="">Lun<br>22</th><th class="">Mar<br>23</th><th class="">Mer<br>24</th><th class="">Gio<br>25</th><th class="">Ven<br>26</th><th class="wk">Sab<br>27</th><th class="wk">Dom<br>28</th><th class="">Lun<br>29</th><th class="">Mar<br>30</th></tr></thead><tbody><tr><td class="name-cell">Mattina 7-16</td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-05-31&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-01&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-02&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-03&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-04&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-07&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-08&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-09&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-10&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-11&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-14&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-15&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-16&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-17&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-18&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-21&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-22&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-23&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-24&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-25&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-28&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-29&#39;,this)"></td></tr><tr><td class="name-cell">Sera 11-20</td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-05-31&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-01&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-02&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-03&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-04&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-07&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-08&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-09&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-10&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-11&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-14&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-15&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-16&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-17&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-18&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-21&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-22&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-23&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-24&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-25&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-28&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-29&#39;,this)"></td></tr></tbody></table></div>
+  </div>
+  <div class="card" id="sum-card" style="display:none">
+    <div class="card-title">
+      📊 Riepilogo
+      <span class="saved-badge" id="saved-badge" style="display:none">✓ Inviato al PM</span>
+    </div>
+    <div class="summary-grid">
+      <div class="sum-card sum-T"><div class="sum-label">Turni richiesti</div><div class="sum-value" id="cnt-T">0</div></div>
+      <div class="sum-card sum-PE"><div class="sum-label">Permessi</div><div class="sum-value" id="cnt-PE">0</div></div>
+      <div class="sum-card sum-F"><div class="sum-label">Ferie</div><div class="sum-value" id="cnt-F">0</div></div>
+      <div class="sum-card sum-C"><div class="sum-label">Giorni cliente</div><div class="sum-value" id="cnt-C">0</div></div>
+    </div>
+    <button class="btn btn-green" id="btn-send" onclick="sendData()" style="width:100%;font-size:14px;padding:12px">
+      📤 Invia scheda al PM
+    </button>
+    <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <p style="font-size:12px;color:#999;margin-top:8px;text-align:center">I dati verranno salvati sul server. Il PM li vedrà subito.</p>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const MONTHS=[
+  {label:'Maggio 2026',year:2026,month:4,key:'2026-05'},
+  {label:'Giugno 2026',year:2026,month:5,key:'2026-06'},
+  {label:'Luglio 2026',year:2026,month:6,key:'2026-07'},
+  {label:'Agosto 2026',year:2026,month:7,key:'2026-08'},
+  {label:'Settembre 2026',year:2026,month:8,key:'2026-09'},
+  {label:'Ottobre 2026',year:2026,month:9,key:'2026-10'},
+  {label:'Novembre 2026',year:2026,month:10,key:'2026-11'},
+  {label:'Dicembre 2026',year:2026,month:11,key:'2026-12'},
+];
+const DAY_NAMES=['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+const CYCLE=['','T','PE','F','C'];
+let currentMonthIdx=1, userName='', data={}, API_URL='', connected=false;
+
+function getDays(mi){const m=MONTHS[mi],days=[],d=new Date(m.year,m.month,1);while(d.getMonth()===m.month){days.push(new Date(d));d.setDate(d.getDate()+1);}return days;}
+function dayKey(d){return d.toISOString().slice(0,10);}
+function isWe(d){return d.getDay()===0||d.getDay()===6;}
+function ensureMonth(mi){if(!data[mi])data[mi]={M:{},S:{}};}
+
+// JSONP con callback name semplice (solo lettere e numeri) e parametri tutti encoded
+let _n=0;
+function jsonp(params){
+  return new Promise((resolve,reject)=>{
+    // Nome callback SOLO con lettere - niente underscore o numeri iniziali
+    const cbName='cb'+(_n++)+'x'+Math.floor(Math.random()*9999);
+    const to=setTimeout(()=>{
+      try{delete window[cbName];}catch(e){}
+      try{if(sc.parentNode)sc.parentNode.removeChild(sc);}catch(e){}
+      reject(new Error('Timeout dopo 20s'));
+    },20000);
+
+    window[cbName]=function(d){
+      clearTimeout(to);
+      try{delete window[cbName];}catch(e){}
+      try{if(sc.parentNode)sc.parentNode.removeChild(sc);}catch(e){}
+      resolve(d);
+    };
+
+    // Costruisci URL con tutti i parametri encodati correttamente
+    let qs='callback='+cbName;
+    Object.entries(params).forEach(([k,v])=>{
+      qs+='&'+encodeURIComponent(k)+'='+encodeURIComponent(v);
+    });
+    const url=API_URL+'?'+qs;
+
+    const sc=document.createElement('script');
+    sc.src=url;
+    sc.onerror=function(){
+      clearTimeout(to);
+      try{delete window[cbName];}catch(e){}
+      reject(new Error('Errore caricamento script'));
+    };
+    document.head.appendChild(sc);
+  });
+}
+
+function saveApiUrl(){
+  const url=document.getElementById('api-url-input').value.trim();
+  if(!url){showToast('URL mancante','err');return;}
+  API_URL=url;localStorage.setItem('turni_api_url',url);ping();
+}
+
+function ping(){
+  if(!API_URL)return;setStatus('connecting');
+  jsonp({action:'ping'}).then(r=>{
+    if(r&&r.ok){setStatus('ok');document.getElementById('setup-box').style.display='none';}
+    else setStatus('err');
+  }).catch(e=>{console.error('ping error',e);setStatus('err');});
+}
+
+function setStatus(s){
+  connected=s==='ok';
+  document.getElementById('status-dot').className='status-dot '+(s==='ok'?'ok':s==='err'?'err':'');
+  document.getElementById('status-txt').textContent=s==='ok'?'Connesso ✓':s==='err'?'Errore connessione':'Connessione...';
+}
+
+function onNameChange(){
+  userName=document.getElementById('sel-name').value;if(!userName)return;
+  document.getElementById('shift-row').style.display='flex';
+  document.getElementById('cal-card').style.display='block';
+  document.getElementById('sum-card').style.display='block';
+  loadLocal();renderGrid();updateSummary();
+  if(connected)loadFromServer();
+}
+
+function changeMonth(dir){
+  currentMonthIdx=Math.max(0,Math.min(MONTHS.length-1,currentMonthIdx+dir));
+  renderGrid();updateSummary();
+  if(userName&&connected)loadFromServer();
+}
+
+function renderGrid(){
+  const mi=currentMonthIdx;ensureMonth(mi);
+  document.getElementById('month-label').textContent=MONTHS[mi].label;
+  const days=getDays(mi);
+  const shifts=[];
+  if(document.getElementById('chk-M').checked)shifts.push('M');
+  if(document.getElementById('chk-S').checked)shifts.push('S');
+  if(!shifts.length){document.getElementById('cal-grid').innerHTML='<p style="padding:10px;font-size:13px;color:#999">Seleziona almeno un turno.</p>';return;}
+  let h='<table class="grid"><thead><tr><th style="text-align:left;min-width:100px">Turno</th>';
+  days.forEach(d=>{const we=isWe(d);h+=`<th class="${we?'wk':''}">${DAY_NAMES[d.getDay()]}<br>${d.getDate()}</th>`;});
+  h+='</tr></thead><tbody>';
+  shifts.forEach(shift=>{
+    h+=`<tr><td class="name-cell">${shift==='M'?'Mattina 7-16':'Sera 11-20'}</td>`;
+    days.forEach(d=>{
+      if(isWe(d)){h+=`<td class="disabled"></td>`;return;}
+      const k=dayKey(d);const val=(data[mi]&&data[mi][shift]&&data[mi][shift][k])||'';
+      h+=`<td class="${val?'v-'+val:'v-empty'}" onclick="cycleCell('${shift}','${k}',this)">${val}</td>`;
+    });
+    h+='</tr>';
+  });
+  document.getElementById('cal-grid').innerHTML=h+'</tbody></table>';
+}
+
+function cycleCell(shift,k,el){
+  const mi=currentMonthIdx;ensureMonth(mi);
+  const cur=(data[mi][shift]&&data[mi][shift][k])||'';
+  const next=CYCLE[(CYCLE.indexOf(cur)+1)%CYCLE.length];
+  if(!data[mi][shift])data[mi][shift]={};
+  if(next)data[mi][shift][k]=next;else delete data[mi][shift][k];
+  el.className=next?'v-'+next:'v-empty';el.textContent=next;
+  updateSummary();document.getElementById('saved-badge').style.display='none';saveLocal();
+}
+
+function updateSummary(){
+  const mi=currentMonthIdx;ensureMonth(mi);
+  const counts={T:0,PE:0,F:0,C:0};
+  getDays(mi).forEach(d=>{
+    if(isWe(d))return;
+    const k=dayKey(d);
+    const vals=['M','S'].map(sh=>(data[mi]&&data[mi][sh]&&data[mi][sh][k])||'').filter(Boolean);
+    [...new Set(vals)].forEach(v=>{if(counts[v]!==undefined)counts[v]++;});
+  });
+  ['T','PE','F','C'].forEach(v=>document.getElementById('cnt-'+v).textContent=counts[v]);
+}
+
+function saveLocal(){try{localStorage.setItem('turni_data_'+userName,JSON.stringify(data));}catch(e){}}
+function loadLocal(){try{const s=localStorage.getItem('turni_data_'+userName);if(s)data=JSON.parse(s);}catch(e){}}
+
+async function loadFromServer(){
+  if(!connected||!userName)return;
+  const mi=currentMonthIdx;
+  try{
+    const r=await jsonp({action:'getPrefs',userName:userName,mese:MONTHS[mi].key});
+    if(r&&r.ok&&r.data){ensureMonth(mi);data[mi]=r.data;saveLocal();renderGrid();updateSummary();}
+  }catch(e){console.error('loadFromServer',e);}
+}
+
+async function sendData(){
+  if(!connected){showToast('Non connesso','err');return;}
+  if(!userName){showToast('Seleziona il tuo nome','err');return;}
+  const mi=currentMonthIdx;ensureMonth(mi);
+  const btn=document.getElementById('btn-send');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Invio in corso...';
+  const bar=document.getElementById('progress-bar');
+  const fill=document.getElementById('progress-fill');
+  bar.style.display='block';fill.style.width='5%';
+
+  try{
+    const mese=MONTHS[mi].key;
+
+    // 1. Cancella dati precedenti
+    await jsonp({action:'clearUser',userName:userName,mese:mese});
+    fill.style.width='15%';
+
+    // 2. Raccogli righe
+    const rows=[];
+    ['M','S'].forEach(turno=>{
+      Object.entries(data[mi][turno]||{}).forEach(([giorno,valore])=>{
+        if(valore)rows.push({turno,giorno,valore});
+      });
+    });
+
+    // 3. Invia una riga alla volta
+    for(let i=0;i<rows.length;i++){
+      const row=rows[i];
+      await jsonp({action:'saveRow',userName:userName,mese:mese,turno:row.turno,giorno:row.giorno,valore:row.valore});
+      fill.style.width=Math.round(15+((i+1)/rows.length)*85)+'%';
+    }
+
+    fill.style.width='100%';
+    showToast('Scheda inviata al PM! ✓','ok');
+    document.getElementById('saved-badge').style.display='inline';
+    saveLocal();
+  }catch(e){
+    console.error('sendData error',e);
+    showToast('Errore: '+e.message,'err');
+  }
+  setTimeout(()=>{bar.style.display='none';fill.style.width='0%';},2000);
+  btn.disabled=false;btn.innerHTML='📤 Invia scheda al PM';
+}
+
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.className='toast '+type;t.style.display='block';
+  setTimeout(()=>t.style.display='none',4000);
+}
+
+API_URL=localStorage.getItem('turni_api_url')||'';
+if(API_URL){document.getElementById('api-url-input').value=API_URL;document.getElementById('setup-box').style.display='none';ping();}
+else setStatus('err');
+renderGrid();
+</script>
+
+
+</body></html>
