@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- saved from url=(0067)file:///C:/Users/m.schiattarella/Downloads/Tecnico_Scheda_v5_1.html -->
+<html lang="it"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>La mia scheda turni</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -58,24 +58,22 @@ table.grid td.disabled{background:#f5f5f5;color:#ccc;cursor:default}
 .progress-bar{height:4px;background:#e0e0e0;border-radius:2px;margin-top:8px;overflow:hidden;display:none}
 .progress-fill{height:100%;background:#16a34a;border-radius:2px;transition:width .3s}
 </style>
-</head>
+<script src="./La mia scheda turni_files/exec"></script></head>
 <body>
 <div class="header">
   <h1>📋 Scheda Turni Personale</h1>
-  <div class="status-dot" id="status-dot"></div>
-  <span class="status-txt" id="status-txt">Connessione...</span>
+  <div class="status-dot err" id="status-dot"></div>
+  <span class="status-txt" id="status-txt">Errore connessione</span>
 </div>
 <div class="container">
-
-  <div class="setup-box" id="setup-box">
+  <div class="setup-box" id="setup-box" style="display: none;">
     <h3>⚙️ Prima configurazione</h3>
-    <p style="font-size:13px;color:#78350f">Incolla qui l'URL della Web App Google Apps Script fornito dal tuo PM:</p>
-    <input type="text" id="api-url-input" placeholder="https://script.google.com/macros/s/.../exec"/>
+    <p style="font-size:13px;color:#78350f">Incolla qui l'URL della Web App Google Apps Script:</p>
+    <input type="text" id="api-url-input" placeholder="https://script.google.com/macros/s/.../exec">
     <div style="display:flex;gap:8px;margin-top:8px">
       <button class="btn btn-primary" onclick="saveApiUrl()">Salva e connetti</button>
     </div>
   </div>
-
   <div class="card">
     <div class="card-title">👤 Chi sei?</div>
     <div class="row">
@@ -97,33 +95,31 @@ table.grid td.disabled{background:#f5f5f5;color:#ccc;cursor:default}
     <div class="row" id="shift-row" style="display:none">
       <span class="label">Turni abilitati</span>
       <label style="font-size:13px;display:flex;align-items:center;gap:5px;cursor:pointer">
-        <input type="checkbox" id="chk-M" checked onchange="renderGrid()"> Mattina 7-16
+        <input type="checkbox" id="chk-M" checked="" onchange="renderGrid()"> Mattina 7-16
       </label>
       <label style="font-size:13px;display:flex;align-items:center;gap:5px;cursor:pointer">
-        <input type="checkbox" id="chk-S" checked onchange="renderGrid()"> Sera 11-20
+        <input type="checkbox" id="chk-S" checked="" onchange="renderGrid()"> Sera 11-20
       </label>
     </div>
   </div>
-
   <div class="card" id="cal-card" style="display:none">
     <div class="card-title">
       📅 Il mio mese
       <div class="month-nav">
         <button onclick="changeMonth(-1)">‹</button>
-        <span class="month-label" id="month-label"></span>
+        <span class="month-label" id="month-label">Giugno 2026</span>
         <button onclick="changeMonth(1)">›</button>
       </div>
     </div>
-    <div class="hint">Clicca su una cella: <strong>T</strong> = turno preferito &nbsp;|&nbsp; <strong>PE</strong> = permesso &nbsp;|&nbsp; <strong>F</strong> = ferie &nbsp;|&nbsp; <strong>C</strong> = cliente</div>
+    <div class="hint">Clicca su una cella: <strong>T</strong> = turno preferito | <strong>PE</strong> = permesso | <strong>F</strong> = ferie | <strong>C</strong> = cliente</div>
     <div class="legend">
       <span class="leg"><span class="leg-box v-T">T</span> Turno</span>
       <span class="leg"><span class="leg-box v-PE">PE</span> Permesso</span>
       <span class="leg"><span class="leg-box v-F">F</span> Ferie</span>
       <span class="leg"><span class="leg-box v-C">C</span> Cliente</span>
     </div>
-    <div class="grid-wrap" id="cal-grid"></div>
+    <div class="grid-wrap" id="cal-grid"><table class="grid"><thead><tr><th style="text-align:left;min-width:100px">Turno</th><th class="">Lun<br>1</th><th class="">Mar<br>2</th><th class="">Mer<br>3</th><th class="">Gio<br>4</th><th class="">Ven<br>5</th><th class="wk">Sab<br>6</th><th class="wk">Dom<br>7</th><th class="">Lun<br>8</th><th class="">Mar<br>9</th><th class="">Mer<br>10</th><th class="">Gio<br>11</th><th class="">Ven<br>12</th><th class="wk">Sab<br>13</th><th class="wk">Dom<br>14</th><th class="">Lun<br>15</th><th class="">Mar<br>16</th><th class="">Mer<br>17</th><th class="">Gio<br>18</th><th class="">Ven<br>19</th><th class="wk">Sab<br>20</th><th class="wk">Dom<br>21</th><th class="">Lun<br>22</th><th class="">Mar<br>23</th><th class="">Mer<br>24</th><th class="">Gio<br>25</th><th class="">Ven<br>26</th><th class="wk">Sab<br>27</th><th class="wk">Dom<br>28</th><th class="">Lun<br>29</th><th class="">Mar<br>30</th></tr></thead><tbody><tr><td class="name-cell">Mattina 7-16</td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-05-31&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-01&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-02&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-03&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-04&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-07&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-08&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-09&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-10&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-11&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-14&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-15&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-16&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-17&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-18&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-21&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-22&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-23&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-24&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-25&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-28&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;M&#39;,&#39;2026-06-29&#39;,this)"></td></tr><tr><td class="name-cell">Sera 11-20</td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-05-31&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-01&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-02&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-03&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-04&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-07&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-08&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-09&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-10&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-11&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-14&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-15&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-16&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-17&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-18&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-21&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-22&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-23&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-24&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-25&#39;,this)"></td><td class="disabled"></td><td class="disabled"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-28&#39;,this)"></td><td class="v-empty" onclick="cycleCell(&#39;S&#39;,&#39;2026-06-29&#39;,this)"></td></tr></tbody></table></div>
   </div>
-
   <div class="card" id="sum-card" style="display:none">
     <div class="card-title">
       📊 Riepilogo
@@ -164,51 +160,55 @@ function dayKey(d){return d.toISOString().slice(0,10);}
 function isWe(d){return d.getDay()===0||d.getDay()===6;}
 function ensureMonth(mi){if(!data[mi])data[mi]={M:{},S:{}};}
 
-// JSONP — unico sistema che funziona cross-origin senza server proxy
-let _cbCounter = 0;
-function jsonp(params) {
-  return new Promise((resolve, reject) => {
-    const cbName = '_cb' + (++_cbCounter) + '_' + Date.now();
-    const timeout = setTimeout(() => {
-      delete window[cbName];
-      if (script.parentNode) script.parentNode.removeChild(script);
-      reject(new Error('Timeout'));
-    }, 15000);
+// JSONP con callback name semplice (solo lettere e numeri) e parametri tutti encoded
+let _n=0;
+function jsonp(params){
+  return new Promise((resolve,reject)=>{
+    // Nome callback SOLO con lettere - niente underscore o numeri iniziali
+    const cbName='cb'+(_n++)+'x'+Math.floor(Math.random()*9999);
+    const to=setTimeout(()=>{
+      try{delete window[cbName];}catch(e){}
+      try{if(sc.parentNode)sc.parentNode.removeChild(sc);}catch(e){}
+      reject(new Error('Timeout dopo 20s'));
+    },20000);
 
-    window[cbName] = function(data) {
-      clearTimeout(timeout);
-      delete window[cbName];
-      if (script.parentNode) script.parentNode.removeChild(script);
-      resolve(data);
+    window[cbName]=function(d){
+      clearTimeout(to);
+      try{delete window[cbName];}catch(e){}
+      try{if(sc.parentNode)sc.parentNode.removeChild(sc);}catch(e){}
+      resolve(d);
     };
 
-    const url = new URL(API_URL);
-    url.searchParams.set('callback', cbName);
-    Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
+    // Costruisci URL con tutti i parametri encodati correttamente
+    let qs='callback='+cbName;
+    Object.entries(params).forEach(([k,v])=>{
+      qs+='&'+encodeURIComponent(k)+'='+encodeURIComponent(v);
+    });
+    const url=API_URL+'?'+qs;
 
-    const script = document.createElement('script');
-    script.src = url.toString();
-    script.onerror = () => {
-      clearTimeout(timeout);
-      delete window[cbName];
-      reject(new Error('Script load error'));
+    const sc=document.createElement('script');
+    sc.src=url;
+    sc.onerror=function(){
+      clearTimeout(to);
+      try{delete window[cbName];}catch(e){}
+      reject(new Error('Errore caricamento script'));
     };
-    document.head.appendChild(script);
+    document.head.appendChild(sc);
   });
 }
 
 function saveApiUrl(){
   const url=document.getElementById('api-url-input').value.trim();
   if(!url){showToast('URL mancante','err');return;}
-  API_URL=url; localStorage.setItem('turni_api_url',url); ping();
+  API_URL=url;localStorage.setItem('turni_api_url',url);ping();
 }
 
 function ping(){
-  if(!API_URL)return; setStatus('connecting');
+  if(!API_URL)return;setStatus('connecting');
   jsonp({action:'ping'}).then(r=>{
-    if(r.ok){setStatus('ok');document.getElementById('setup-box').style.display='none';}
+    if(r&&r.ok){setStatus('ok');document.getElementById('setup-box').style.display='none';}
     else setStatus('err');
-  }).catch(()=>setStatus('err'));
+  }).catch(e=>{console.error('ping error',e);setStatus('err');});
 }
 
 function setStatus(s){
@@ -218,27 +218,27 @@ function setStatus(s){
 }
 
 function onNameChange(){
-  userName=document.getElementById('sel-name').value; if(!userName)return;
+  userName=document.getElementById('sel-name').value;if(!userName)return;
   document.getElementById('shift-row').style.display='flex';
   document.getElementById('cal-card').style.display='block';
   document.getElementById('sum-card').style.display='block';
-  loadLocal(); renderGrid(); updateSummary();
-  if(connected) loadFromServer();
+  loadLocal();renderGrid();updateSummary();
+  if(connected)loadFromServer();
 }
 
 function changeMonth(dir){
   currentMonthIdx=Math.max(0,Math.min(MONTHS.length-1,currentMonthIdx+dir));
-  renderGrid(); updateSummary();
-  if(userName&&connected) loadFromServer();
+  renderGrid();updateSummary();
+  if(userName&&connected)loadFromServer();
 }
 
 function renderGrid(){
-  const mi=currentMonthIdx; ensureMonth(mi);
+  const mi=currentMonthIdx;ensureMonth(mi);
   document.getElementById('month-label').textContent=MONTHS[mi].label;
   const days=getDays(mi);
   const shifts=[];
-  if(document.getElementById('chk-M').checked) shifts.push('M');
-  if(document.getElementById('chk-S').checked) shifts.push('S');
+  if(document.getElementById('chk-M').checked)shifts.push('M');
+  if(document.getElementById('chk-S').checked)shifts.push('S');
   if(!shifts.length){document.getElementById('cal-grid').innerHTML='<p style="padding:10px;font-size:13px;color:#999">Seleziona almeno un turno.</p>';return;}
   let h='<table class="grid"><thead><tr><th style="text-align:left;min-width:100px">Turno</th>';
   days.forEach(d=>{const we=isWe(d);h+=`<th class="${we?'wk':''}">${DAY_NAMES[d.getDay()]}<br>${d.getDate()}</th>`;});
@@ -247,7 +247,7 @@ function renderGrid(){
     h+=`<tr><td class="name-cell">${shift==='M'?'Mattina 7-16':'Sera 11-20'}</td>`;
     days.forEach(d=>{
       if(isWe(d)){h+=`<td class="disabled"></td>`;return;}
-      const k=dayKey(d); const val=(data[mi]&&data[mi][shift]&&data[mi][shift][k])||'';
+      const k=dayKey(d);const val=(data[mi]&&data[mi][shift]&&data[mi][shift][k])||'';
       h+=`<td class="${val?'v-'+val:'v-empty'}" onclick="cycleCell('${shift}','${k}',this)">${val}</td>`;
     });
     h+='</tr>';
@@ -256,17 +256,17 @@ function renderGrid(){
 }
 
 function cycleCell(shift,k,el){
-  const mi=currentMonthIdx; ensureMonth(mi);
+  const mi=currentMonthIdx;ensureMonth(mi);
   const cur=(data[mi][shift]&&data[mi][shift][k])||'';
   const next=CYCLE[(CYCLE.indexOf(cur)+1)%CYCLE.length];
-  if(!data[mi][shift]) data[mi][shift]={};
-  if(next) data[mi][shift][k]=next; else delete data[mi][shift][k];
-  el.className=next?'v-'+next:'v-empty'; el.textContent=next;
-  updateSummary(); document.getElementById('saved-badge').style.display='none'; saveLocal();
+  if(!data[mi][shift])data[mi][shift]={};
+  if(next)data[mi][shift][k]=next;else delete data[mi][shift][k];
+  el.className=next?'v-'+next:'v-empty';el.textContent=next;
+  updateSummary();document.getElementById('saved-badge').style.display='none';saveLocal();
 }
 
 function updateSummary(){
-  const mi=currentMonthIdx; ensureMonth(mi);
+  const mi=currentMonthIdx;ensureMonth(mi);
   const counts={T:0,PE:0,F:0,C:0};
   getDays(mi).forEach(d=>{
     if(isWe(d))return;
@@ -284,57 +284,59 @@ async function loadFromServer(){
   if(!connected||!userName)return;
   const mi=currentMonthIdx;
   try{
-    const r=await jsonp({action:'getPrefs',userName,mese:MONTHS[mi].key});
-    if(r.ok&&r.data){ ensureMonth(mi); data[mi]=r.data; saveLocal(); renderGrid(); updateSummary(); }
-  }catch(e){ console.error('loadFromServer',e); }
+    const r=await jsonp({action:'getPrefs',userName:userName,mese:MONTHS[mi].key});
+    if(r&&r.ok&&r.data){ensureMonth(mi);data[mi]=r.data;saveLocal();renderGrid();updateSummary();}
+  }catch(e){console.error('loadFromServer',e);}
 }
 
 async function sendData(){
   if(!connected){showToast('Non connesso','err');return;}
   if(!userName){showToast('Seleziona il tuo nome','err');return;}
-  const mi=currentMonthIdx; ensureMonth(mi);
+  const mi=currentMonthIdx;ensureMonth(mi);
   const btn=document.getElementById('btn-send');
-  btn.disabled=true; btn.innerHTML='<span class="spinner"></span>Invio in corso...';
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Invio in corso...';
   const bar=document.getElementById('progress-bar');
   const fill=document.getElementById('progress-fill');
-  bar.style.display='block'; fill.style.width='5%';
+  bar.style.display='block';fill.style.width='5%';
 
   try{
     const mese=MONTHS[mi].key;
+
     // 1. Cancella dati precedenti
-    await jsonp({action:'clearUser', userName, mese});
+    await jsonp({action:'clearUser',userName:userName,mese:mese});
     fill.style.width='15%';
 
     // 2. Raccogli righe
     const rows=[];
     ['M','S'].forEach(turno=>{
       Object.entries(data[mi][turno]||{}).forEach(([giorno,valore])=>{
-        if(valore) rows.push({turno,giorno,valore});
+        if(valore)rows.push({turno,giorno,valore});
       });
     });
 
-    // 3. Invia una riga alla volta via JSONP
+    // 3. Invia una riga alla volta
     for(let i=0;i<rows.length;i++){
       const row=rows[i];
-      await jsonp({action:'saveRow', userName, mese, turno:row.turno, giorno:row.giorno, valore:row.valore});
+      await jsonp({action:'saveRow',userName:userName,mese:mese,turno:row.turno,giorno:row.giorno,valore:row.valore});
       fill.style.width=Math.round(15+((i+1)/rows.length)*85)+'%';
     }
 
     fill.style.width='100%';
     showToast('Scheda inviata al PM! ✓','ok');
     document.getElementById('saved-badge').style.display='inline';
+    saveLocal();
   }catch(e){
     console.error('sendData error',e);
     showToast('Errore: '+e.message,'err');
   }
-  setTimeout(()=>{bar.style.display='none';fill.style.width='0%';},1500);
-  btn.disabled=false; btn.innerHTML='📤 Invia scheda al PM';
+  setTimeout(()=>{bar.style.display='none';fill.style.width='0%';},2000);
+  btn.disabled=false;btn.innerHTML='📤 Invia scheda al PM';
 }
 
 function showToast(msg,type='ok'){
-  const t=document.getElementById('toast'); t.textContent=msg;
-  t.className='toast '+type; t.style.display='block';
-  setTimeout(()=>t.style.display='none',3500);
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.className='toast '+type;t.style.display='block';
+  setTimeout(()=>t.style.display='none',4000);
 }
 
 API_URL=localStorage.getItem('turni_api_url')||'';
@@ -342,5 +344,6 @@ if(API_URL){document.getElementById('api-url-input').value=API_URL;document.getE
 else setStatus('err');
 renderGrid();
 </script>
-</body>
-</html>
+
+
+</body></html>
