@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PM Planner — Turni</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f6f9;color:#1a1a1a;min-height:100vh}
+.header{background:#1a1a1a;color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px}
+.header h1{font-size:16px;font-weight:600;flex:1}
+.role{font-size:11px;background:#16a34a;color:#fff;padding:2px 8px;border-radius:20px;font-weight:600}
+.status-dot{width:9px;height:9px;border-radius:50%;background:#f59e0b;flex-shrink:0}
+.status-dot.ok{background:#16a34a}.status-dot.err{background:#dc2626}
+.status-txt{font-size:12px;color:#aaa}
+.container{max-width:1200px;margin:24px auto;padding:0 20px}
+.card{background:#fff;border:1px solid #e8e8e8;border-radius:12px;padding:20px 24px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card-title{font-size:15px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid #ddd;margin-bottom:20px}
+.tab{padding:9px 18px;font-size:13px;font-weight:500;color:#666;cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none}
+.tab.active{color:#1a1a1a;border-bottom-color:#1a1a1a}
+.section{display:none}.section.active{display:block}
+.btn{padding:8px 18px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;border:none}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:#1a1a1a;color:#fff}
+.btn-green{background:#16a34a;color:#fff}
+.btn-green:hover:not(:disabled){background:#15803d}
+.btn-outline{background:#fff;color:#444;border:1px solid #ddd}
+.btn-outline:hover{background:#f5f5f5}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{display:flex;align-items:center;gap:6px;padding:5px 10px 5px 6px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid #e0e0e0;background:#f5f5f5}
+.chip .av{width:24px;height:24px;border-radius:50%;background:#dbeafe;color:#1e40af;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.chip.loaded{background:#dcfce7;border-color:#bbf7d0;color:#15803d}
+.chip.loaded .av{background:#bbf7d0;color:#15803d}
+.grid-wrap{overflow-x:auto}
+table.grid{border-collapse:collapse;min-width:100%}
+table.grid th{padding:5px 4px;text-align:center;font-weight:600;color:#555;border:1px solid #e5e5e5;background:#f9f9f9;white-space:nowrap;font-size:11px;min-width:32px}
+table.grid th.wk{color:#c0392b;background:#fff5f5}
+table.grid td{padding:3px;text-align:center;border:1px solid #e5e5e5;font-size:11px;font-weight:700;min-width:32px;height:26px;cursor:pointer;user-select:none}
+table.grid td.nc{text-align:left;padding:3px 10px;min-width:130px;font-size:12px;font-weight:500;color:#444;cursor:default;background:#f9f9f9;white-space:nowrap}
+table.grid td.dis{background:#f5f5f5;color:#ccc;cursor:default}
+table.grid td.sl{background:#f0f0f0;font-weight:600;font-size:11px;text-align:left;padding:5px 10px;color:#555;cursor:default}
+.v-T{background:#dbeafe;color:#1e40af}.v-Ts{background:#bfdbfe;color:#1d4ed8}
+.v-PE{background:#fee2e2;color:#b91c1c}.v-F{background:#fef9c3;color:#854d0e}
+.v-C{background:#dcfce7;color:#15803d}.v-R{background:#ffedd5;color:#9a3412}
+.v-empty:hover{background:#f5f5f5}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.leg{display:flex;align-items:center;gap:5px;font-size:12px;color:#555}
+.leg-box{width:26px;height:19px;border-radius:3px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.stat{background:#f4f6f9;border-radius:8px;padding:10px 14px}
+.stat-label{font-size:11px;color:#666;margin-bottom:3px}
+.stat-value{font-size:22px;font-weight:700}
+.msg{font-size:13px;padding:9px 14px;border-radius:8px;margin-bottom:8px}
+.msg.warn{background:#fef9c3;color:#854d0e}.msg.success{background:#dcfce7;color:#15803d}.msg.info{background:#dbeafe;color:#1e40af}
+.month-nav{display:flex;align-items:center;gap:8px;margin-left:auto}
+.month-nav button{background:none;border:1px solid #ddd;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:15px}
+.month-nav button:hover{background:#f0f0f0}
+.month-label{font-size:13px;font-weight:600;min-width:130px;text-align:center}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.hint{font-size:12px;color:#888;background:#f9f9f9;padding:7px 12px;border-radius:8px;margin-bottom:10px}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.setup-box{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.setup-box h3{font-size:14px;font-weight:600;color:#92400e;margin-bottom:8px}
+.setup-box input{width:100%;margin-top:8px;height:36px;padding:0 12px;font-size:13px;border:1px solid #fcd34d;border-radius:8px}
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);display:none;z-index:999;color:#fff}
+.toast.ok{background:#16a34a}.toast.err{background:#dc2626}.toast.info{background:#1e40af}
+.last-refresh{font-size:11px;color:#999;margin-left:8px}
+.refresh-btn{font-size:12px;padding:5px 12px;border-radius:6px;cursor:pointer;border:1px solid #ddd;background:#fff;color:#555}
+.refresh-btn:hover{background:#f5f5f5}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>📋 PM Planner — Gestione Turni</h1>
+  <span class="role">PM</span>
+  <div class="status-dot" id="status-dot"></div>
+  <span class="status-txt" id="status-txt">Connessione...</span>
+</div>
+
+<div class="container">
+
+<div class="setup-box" id="setup-box">
+  <h3>⚙️ Prima configurazione</h3>
+  <p>Incolla l'URL della Web App Google Apps Script:</p>
+  <input type="text" id="api-url-input" placeholder="https://script.google.com/macros/s/.../exec"/>
+  <div style="display:flex;gap:8px;margin-top:8px">
+    <button class="btn btn-primary" onclick="saveApiUrl()">Salva e connetti</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('schede')">👥 Schede ricevute</button>
+  <button class="tab" onclick="showTab('preview')">👁 Anteprima</button>
+  <button class="tab" onclick="showTab('planning')">⚡ Planning</button>
+  <button class="tab" onclick="showTab('book')">📒 Book</button>
+</div>
+
+<!-- SCHEDE -->
+<div id="tab-schede" class="section active">
+  <div class="card">
+    <div class="card-title">
+      📅 Mese
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <select id="sel-month" onchange="onMonthChange()" style="height:32px;padding:0 10px;font-size:13px;border:1px solid #ddd;border-radius:8px">
+          <option value="0">Maggio 2026</option>
+          <option value="1" selected>Giugno 2026</option>
+          <option value="2">Luglio 2026</option>
+          <option value="3">Agosto 2026</option>
+          <option value="4">Settembre 2026</option>
+          <option value="5">Ottobre 2026</option>
+          <option value="6">Novembre 2026</option>
+          <option value="7">Dicembre 2026</option>
+        </select>
+        <button class="btn btn-green" onclick="loadAllPrefs()" id="refresh-btn">📥 Carica schede</button>
+        <span class="last-refresh" id="last-refresh"></span>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">✅ Schede ricevute (<span id="loaded-count">0</span>)</div>
+    <div class="chips" id="chips-loaded"><span style="font-size:13px;color:#999">Nessuna ancora.</span></div>
+    <div style="font-size:13px;font-weight:600;margin-bottom:6px;color:#555">⏳ Mancanti:</div>
+    <div id="chips-missing"><span style="font-size:13px;color:#999">—</span></div>
+  </div>
+</div>
+
+<!-- PREVIEW -->
+<div id="tab-preview" class="section">
+  <div class="card">
+    <div class="card-title">
+      👁 Preferenze raccolte
+      <div class="month-nav">
+        <button onclick="changeMonth(-1)">‹</button>
+        <span class="month-label" id="prev-ml"></span>
+        <button onclick="changeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="legend">
+      <span class="leg"><span class="leg-box v-T">T</span> Turno richiesto</span>
+      <span class="leg"><span class="leg-box v-PE">PE</span> Permesso</span>
+      <span class="leg"><span class="leg-box v-F">F</span> Ferie</span>
+      <span class="leg"><span class="leg-box v-C">C</span> Cliente</span>
+    </div>
+    <div class="grid-wrap" id="preview-grid"></div>
+  </div>
+</div>
+
+<!-- PLANNING -->
+<div id="tab-planning" class="section">
+  <div class="card">
+    <div class="card-title">
+      ⚡ Planning
+      <div class="month-nav">
+        <button onclick="changeMonth(-1)">‹</button>
+        <span class="month-label" id="plan-ml"></span>
+        <button onclick="changeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn btn-green" onclick="generatePlanning()">⚡ Genera automaticamente</button>
+      <button class="btn btn-outline" onclick="savePlanningToServer()">☁ Salva su server</button>
+      <button class="btn btn-primary" onclick="exportExcel()">⬇ Esporta Excel</button>
+    </div>
+    <div id="plan-msgs"></div>
+    <div class="stats-grid" id="plan-stats"></div>
+    <div class="legend">
+      <span class="leg"><span class="leg-box v-T">T</span> Turno</span>
+      <span class="leg"><span class="leg-box v-Ts">T✓</span> Con pref.</span>
+      <span class="leg"><span class="leg-box v-PE">PE</span> Permesso</span>
+      <span class="leg"><span class="leg-box v-F">F</span> Ferie</span>
+      <span class="leg"><span class="leg-box v-C">C</span> Cliente</span>
+      <span class="leg"><span class="leg-box v-R">R</span> Reperibilità</span>
+    </div>
+    <div class="hint">Clicca su una cella per modificarla manualmente.</div>
+    <div class="grid-wrap" id="plan-grid"></div>
+  </div>
+</div>
+
+<!-- BOOK -->
+<div id="tab-book" class="section">
+  <div class="card">
+    <div class="card-title">
+      📒 Book ufficiale
+      <div class="month-nav">
+        <button onclick="changeMonth(-1)">‹</button>
+        <span class="month-label" id="book-ml"></span>
+        <button onclick="changeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn btn-outline" onclick="savePlanningToServer()">☁ Salva su server</button>
+      <button class="btn btn-primary" onclick="exportExcel()">⬇ Esporta Excel</button>
+    </div>
+    <div class="hint">Clicca per ciclare: vuota → T → PE → F → C → R → vuota</div>
+    <div class="grid-wrap" id="book-grid"></div>
+  </div>
+</div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const MONTHS=[
+  {label:'Maggio 2026',year:2026,month:4,key:'2026-05'},
+  {label:'Giugno 2026',year:2026,month:5,key:'2026-06'},
+  {label:'Luglio 2026',year:2026,month:6,key:'2026-07'},
+  {label:'Agosto 2026',year:2026,month:7,key:'2026-08'},
+  {label:'Settembre 2026',year:2026,month:8,key:'2026-09'},
+  {label:'Ottobre 2026',year:2026,month:9,key:'2026-10'},
+  {label:'Novembre 2026',year:2026,month:10,key:'2026-11'},
+  {label:'Dicembre 2026',year:2026,month:11,key:'2026-12'},
+];
+const ALL_PEOPLE=['Brazzo Giulio','Cantoro Federico','Cornacchia Biagio','Fortugno Fabio','Fumagalli Alessio','Mazzone Paolo','Negri Pietro','Giovagnoni Simone','Lorenzini Marco','Ye Daniele'];
+const SHIFTS_CONFIG={'Negri Pietro':{M:true,S:false}};
+const DAY_NAMES=['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+const BOOK_CYCLE=['','T','PE','F','C','R'];
+
+let currentMonthIdx=1;
+let API_URL='';
+let connected=false;
+let allPrefs={};
+let whoSent=[];
+let planning={};
+let book={};
+let repData={};
+
+function getDays(mi){const m=MONTHS[mi],days=[],d=new Date(m.year,m.month,1);while(d.getMonth()===m.month){days.push(new Date(d));d.setDate(d.getDate()+1);}return days;}
+function dk(d){return d.toISOString().slice(0,10);}
+function isWe(d){return d.getDay()===0||d.getDay()===6;}
+function getShifts(name){return SHIFTS_CONFIG[name]||{M:true,S:true};}
+function getPref(name,shift,day){return(allPrefs[name]&&allPrefs[name][shift]&&allPrefs[name][shift][day])||'';}
+
+// ---- API via GET ----
+async function apiCall(params){
+  const url=new URL(API_URL);
+  Object.entries(params).forEach(([k,v])=>url.searchParams.append(k,v));
+  const res=await fetch(url.toString(),{method:'GET'});
+  return res.json();
+}
+
+function saveApiUrl(){
+  const url=document.getElementById('api-url-input').value.trim();
+  if(!url){showToast('URL mancante','err');return;}
+  API_URL=url;localStorage.setItem('pm_api_url',url);ping();
+}
+
+function ping(){
+  if(!API_URL)return;setStatus('connecting');
+  apiCall({action:'ping'}).then(r=>{
+    if(r.ok){setStatus('ok');document.getElementById('setup-box').style.display='none';loadAllPrefs();}
+    else setStatus('err');
+  }).catch(()=>setStatus('err'));
+}
+
+function setStatus(s){
+  connected=s==='ok';
+  document.getElementById('status-dot').className='status-dot '+(s==='ok'?'ok':s==='err'?'err':'');
+  document.getElementById('status-txt').textContent=s==='ok'?'Connesso ✓':s==='err'?'Errore connessione':'Connessione...';
+}
+
+function showTab(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['schede','preview','planning','book'][i]===t));
+  document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  updateMonthLabels();
+  if(t==='preview')renderPreview();
+  if(t==='planning'){loadPlanningFromServer().then(()=>renderPlanningGrid());}
+  if(t==='book'){loadPlanningFromServer().then(()=>renderBookGrid());}
+}
+
+function onMonthChange(){currentMonthIdx=parseInt(document.getElementById('sel-month').value);updateMonthLabels();loadAllPrefs();}
+function changeMonth(dir){currentMonthIdx=Math.max(0,Math.min(MONTHS.length-1,currentMonthIdx+dir));updateMonthLabels();loadAllPrefs();}
+
+function updateMonthLabels(){
+  ['prev-ml','plan-ml','book-ml'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=MONTHS[currentMonthIdx].label;});
+}
+
+async function loadAllPrefs(){
+  if(!connected){showToast('Non connesso','err');return;}
+  const btn=document.getElementById('refresh-btn');
+  btn.textContent='⏳ Caricamento...';btn.disabled=true;
+  try{
+    const r=await apiCall({action:'getAllPrefs',mese:MONTHS[currentMonthIdx].key});
+    if(r.ok){
+      allPrefs=r.data||{};whoSent=r.whoSent||[];
+      renderSchede();renderPreview();
+      document.getElementById('last-refresh').textContent='Agg. '+new Date().toLocaleTimeString('it-IT');
+      showToast('Schede caricate ✓','ok');
+    } else showToast('Errore: '+r.msg,'err');
+  }catch(e){showToast('Errore connessione','err');console.error(e);}
+  btn.textContent='📥 Carica schede';btn.disabled=false;
+}
+
+async function loadPlanningFromServer(){
+  if(!connected)return;
+  try{
+    const r=await apiCall({action:'getPlanning',mese:MONTHS[currentMonthIdx].key});
+    if(r.ok){planning=r.planning||{};book=r.book||{};repData=r.repData||{};}
+  }catch(e){console.error(e);}
+}
+
+async function savePlanningToServer(){
+  if(!connected){showToast('Non connesso','err');return;}
+  try{
+    const payload=encodeURIComponent(JSON.stringify({planning,book,repData}));
+    const r=await apiCall({action:'savePlanning',mese:MONTHS[currentMonthIdx].key,payload});
+    if(r.ok)showToast('Planning salvato ✓','ok');
+    else showToast('Errore: '+r.msg,'err');
+  }catch(e){showToast('Errore','err');console.error(e);}
+}
+
+function renderSchede(){
+  document.getElementById('loaded-count').textContent=whoSent.length;
+  const loaded=document.getElementById('chips-loaded');
+  loaded.innerHTML=whoSent.length
+    ?whoSent.map(n=>{const ini=n.split(' ').map(x=>x[0]).slice(0,2).join('');return`<div class="chip loaded"><div class="av">${ini}</div>${n}</div>`;}).join('')
+    :'<span style="font-size:13px;color:#999">Nessuna scheda ricevuta per questo mese.</span>';
+  const miss=ALL_PEOPLE.filter(n=>!whoSent.includes(n));
+  document.getElementById('chips-missing').innerHTML=miss.length
+    ?miss.map(n=>`<span style="display:inline-block;margin:3px 4px;padding:3px 10px;background:#fff3cd;border:1px solid #fde68a;border-radius:20px;font-size:12px;color:#854d0e">${n}</span>`).join('')
+    :'<span style="color:#16a34a;font-weight:600;font-size:13px">✓ Tutti hanno inviato!</span>';
+}
+
+function renderPreview(){
+  const mi=currentMonthIdx;const days=getDays(mi);const wrap=document.getElementById('preview-grid');
+  if(!whoSent.length){wrap.innerHTML='<p style="font-size:13px;color:#666;padding:10px">Nessuna scheda caricata per questo mese.</p>';return;}
+  let h=buildHeader(days);
+  ['M','S'].forEach(shift=>{
+    h+=`<tr><td colspan="${days.length+1}" class="sl">${shift==='M'?'Turno Mattina 7-16':'Turno Sera 11-20'}</td></tr>`;
+    ALL_PEOPLE.filter(n=>getShifts(n)[shift]).forEach(name=>{
+      const sent=whoSent.includes(name);
+      h+=`<tr><td class="nc" style="${!sent?'color:#bbb':''}">${name}${!sent?' ⏳':''}</td>`;
+      days.forEach(d=>{
+        if(isWe(d)){h+=`<td class="dis"></td>`;return;}
+        const val=getPref(name,shift,dk(d));
+        h+=`<td class="${val?'v-'+val:'v-empty'}">${val}</td>`;
+      });
+      h+='</tr>';
+    });
+  });
+  wrap.innerHTML=h+'</tbody></table>';
+}
+
+function generatePlanning(){
+  const mi=currentMonthIdx;const days=getDays(mi);
+  planning={};
+  days.forEach(d=>{
+    if(isWe(d))return;
+    const day=dk(d);
+    ['M','S'].forEach(shift=>{
+      const eligible=ALL_PEOPLE.filter(n=>{
+        if(!getShifts(n)[shift])return false;
+        const pv=getPref(n,shift,day);
+        return pv!=='PE'&&pv!=='F';
+      });
+      const withPref=eligible.filter(n=>getPref(n,shift,day)==='T');
+      const pool=withPref.length>0?withPref:eligible;
+      const countT=n=>Object.keys(planning).filter(k=>k.endsWith('_'+shift)&&planning[k]===n).length;
+      const sorted=[...pool].sort((a,b)=>countT(a)-countT(b));
+      if(sorted.length>0)planning[`${day}_${shift}`]=sorted[0];
+    });
+  });
+  book={};repData={};
+  days.forEach(d=>{
+    if(isWe(d))return;
+    const day=dk(d);
+    ALL_PEOPLE.forEach(n=>{
+      ['M','S'].forEach(sh=>{
+        if(!getShifts(n)[sh])return;
+        const pv=getPref(n,sh,day);
+        if(pv==='PE'||pv==='F'||pv==='C')book[`${n}_${sh}_${day}`]=pv;
+      });
+    });
+    ['M','S'].forEach(sh=>{
+      const who=planning[`${day}_${sh}`];
+      if(who)book[`${who}_${sh}_${day}`]='T';
+    });
+  });
+  renderPlanningGrid();
+}
+
+function renderPlanningGrid(){
+  const mi=currentMonthIdx;const days=getDays(mi);const wrap=document.getElementById('plan-grid');
+  const counts={M:{},S:{}};
+  ALL_PEOPLE.forEach(n=>{counts.M[n]=0;counts.S[n]=0;});
+  Object.entries(planning).forEach(([k,n])=>{const sh=k.endsWith('_M')?'M':'S';if(counts[sh][n]!==undefined)counts[sh][n]++;});
+  const wdays=days.filter(d=>!isWe(d)).length;
+  document.getElementById('plan-stats').innerHTML=`
+    <div class="stat"><div class="stat-label">Giornate lavorative</div><div class="stat-value">${wdays}</div></div>
+    <div class="stat"><div class="stat-label">Turni mattina</div><div class="stat-value">${Object.values(counts.M).reduce((a,b)=>a+b,0)}</div></div>
+    <div class="stat"><div class="stat-label">Turni sera</div><div class="stat-value">${Object.values(counts.S).reduce((a,b)=>a+b,0)}</div></div>`;
+  const msgs=[];
+  if(!Object.keys(planning).length)msgs.push({t:'info',m:'Premi "Genera automaticamente" per creare il planning.'});
+  else{
+    ['M','S'].forEach(sh=>{
+      const vals=ALL_PEOPLE.filter(n=>getShifts(n)[sh]).map(n=>counts[sh][n]);
+      if(vals.length<2)return;
+      const mx=Math.max(...vals),mn=Math.min(...vals);
+      if(mx-mn>3)msgs.push({t:'warn',m:`Turni ${sh==='M'?'mattina':'sera'}: delta ${mn}–${mx}.`});
+    });
+    if(!msgs.length)msgs.push({t:'success',m:'✓ Planning bilanciato.'});
+  }
+  document.getElementById('plan-msgs').innerHTML=msgs.map(m=>`<div class="msg ${m.t}">${m.m}</div>`).join('');
+  let h='<table class="grid"><thead><tr><th style="text-align:left;min-width:130px">Nome</th><th>TM</th><th>TS</th>';
+  days.forEach(d=>{const we=isWe(d);h+=`<th class="${we?'wk':''}">${DAY_NAMES[d.getDay()]}<br>${d.getDate()}</th>`;});
+  h+='</tr></thead><tbody>';
+  ['M','S'].forEach(shift=>{
+    h+=`<tr><td colspan="${days.length+3}" class="sl">${shift==='M'?'GEN Turno Mattina 7-16':'GEN Turno Sera 11-20'}</td></tr>`;
+    ALL_PEOPLE.filter(n=>getShifts(n)[shift]).forEach(name=>{
+      h+=`<tr><td class="nc">${name}</td>
+        <td style="font-size:10px;font-weight:700;color:#1e40af">${counts.M[name]||0}</td>
+        <td style="font-size:10px;font-weight:700;color:#666">${counts.S[name]||0}</td>`;
+      days.forEach(d=>{
+        if(isWe(d)){h+=`<td class="dis"></td>`;return;}
+        const day=dk(d);const bk=`${name}_${shift}_${day}`;const val=book[bk]||'';
+        const hasPref=getPref(name,shift,day)==='T';
+        const rep=repData[`rep_${name}_${day}`]||'';
+        let cls='v-empty',txt='';
+        if(val==='T'){cls=hasPref?'v-Ts':'v-T';txt=hasPref?'T✓':'T';}
+        else if(val==='PE'){cls='v-PE';txt='PE';}
+        else if(val==='F'){cls='v-F';txt='F';}
+        else if(val==='C'){cls='v-C';txt='C';}
+        else if(val==='R'){cls='v-R';txt=rep?'+'+rep+'h':'R';}
+        h+=`<td class="${cls}" onclick="cycleBook('${name}','${shift}','${day}',this)">${txt}</td>`;
+      });
+      h+='</tr>';
+    });
+  });
+  wrap.innerHTML=h+'</tbody></table>';
+}
+
+function renderBookGrid(){
+  const mi=currentMonthIdx;const days=getDays(mi);const wrap=document.getElementById('book-grid');
+  let h=buildHeader(days);
+  ['M','S'].forEach(shift=>{
+    h+=`<tr><td colspan="${days.length+1}" class="sl">${shift==='M'?'GEN Turno Mattina 7-16':'GEN Turno Sera 11-20'}</td></tr>`;
+    ALL_PEOPLE.filter(n=>getShifts(n)[shift]).forEach(name=>{
+      h+=`<tr><td class="nc">${name}</td>`;
+      days.forEach(d=>{
+        if(isWe(d)){h+=`<td class="dis"></td>`;return;}
+        const day=dk(d);const bk=`${name}_${shift}_${day}`;const val=book[bk]||'';
+        const rep=repData[`rep_${name}_${day}`]||'';
+        let cls='v-empty',txt='';
+        if(val==='T'){cls='v-T';txt='T';}else if(val==='PE'){cls='v-PE';txt='PE';}
+        else if(val==='F'){cls='v-F';txt='F';}else if(val==='C'){cls='v-C';txt='C';}
+        else if(val==='R'){cls='v-R';txt=rep?'+'+rep+'h':'R';}
+        h+=`<td class="${cls}" onclick="cycleBook('${name}','${shift}','${day}',this)">${txt}</td>`;
+      });
+      h+='</tr>';
+    });
+  });
+  wrap.innerHTML=h+'</tbody></table>';
+}
+
+function cycleBook(name,shift,day,el){
+  const bk=`${name}_${shift}_${day}`;const cur=book[bk]||'';
+  const next=BOOK_CYCLE[(BOOK_CYCLE.indexOf(cur)+1)%BOOK_CYCLE.length];
+  if(next==='R'){
+    const v=prompt('Ore reperibilità:',repData[`rep_${name}_${day}`]||'');
+    if(v===null)return;const n=parseInt(v);
+    if(!v||n===0){delete repData[`rep_${name}_${day}`];delete book[bk];el.className='v-empty';el.textContent='';}
+    else{repData[`rep_${name}_${day}`]=n;book[bk]='R';el.className='v-R';el.textContent='+'+n+'h';}
+  } else {
+    if(next)book[bk]=next; else{delete book[bk];delete repData[`rep_${name}_${day}`];}
+    let cls='v-empty',txt='';
+    if(next==='T'){cls='v-T';txt='T';}else if(next==='PE'){cls='v-PE';txt='PE';}
+    else if(next==='F'){cls='v-F';txt='F';}else if(next==='C'){cls='v-C';txt='C';}
+    el.className=cls;el.textContent=txt;
+  }
+}
+
+function buildHeader(days){
+  let h='<table class="grid"><thead><tr><th style="text-align:left;min-width:130px">Nome</th>';
+  days.forEach(d=>{const we=isWe(d);h+=`<th class="${we?'wk':''}">${DAY_NAMES[d.getDay()]}<br>${d.getDate()}</th>`;});
+  return h+'</tr></thead><tbody>';
+}
+
+function exportExcel(){
+  if(typeof XLSX==='undefined'){alert('Libreria non caricata.');return;}
+  const mi=currentMonthIdx;const days=getDays(mi);const wdays=days.filter(d=>!isWe(d));
+  const wb=XLSX.utils.book_new();
+  const hdr=['Nome',...wdays.map(d=>DAY_NAMES[d.getDay()]+' '+d.getDate()+'/'+String(d.getMonth()+1))];
+  const rows=[hdr];
+  ['M','S'].forEach(shift=>{
+    rows.push([shift==='M'?'--- TURNO MATTINA 7-16 ---':'--- TURNO SERA 11-20 ---']);
+    ALL_PEOPLE.filter(n=>getShifts(n)[shift]).forEach(name=>{
+      const row=[name];
+      wdays.forEach(d=>{
+        const day=dk(d);const bval=book[`${name}_${shift}_${day}`]||'';
+        const rep=repData[`rep_${name}_${day}`]||'';
+        row.push(bval==='R'?(rep?'+'+rep+'h':'R'):bval+(rep?' +'+rep+'h':''));
+      });
+      rows.push(row);
+    });
+  });
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  XLSX.utils.book_append_sheet(wb,ws,'Book');
+  XLSX.writeFile(wb,'Book_'+MONTHS[mi].label.replace(' ','_')+'.xlsx');
+}
+
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type;t.style.display='block';
+  setTimeout(()=>t.style.display='none',3500);
+}
+
+API_URL=localStorage.getItem('pm_api_url')||'';
+if(API_URL){document.getElementById('api-url-input').value=API_URL;document.getElementById('setup-box').style.display='none';ping();}
+else setStatus('err');
+updateMonthLabels();
+</script>
+</body>
+</html>
